@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complicated Caesar Cipher</title>
+    <style>
+        /* Add loading animation */
+        @keyframes loading {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loader {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: loading 2s linear infinite;
+            display: none; /* Initially hidden */
+            margin: 20px auto;
+        }
+
+        /* Styling for input and buttons */
+        input[type="number"], textarea {
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            width: calc(100% - 24px);
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Styling for output box */
+        #output {
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 18px;
+            background-color: #f9f9f9;
+        }
+
+        /* Styling for main content */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Styling for header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            height: 100px;
+            margin-right: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin: 0;
+            font-family: '', helvetica;
+        }
+
+        /* Styling for paragraphs */
+        p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Styling for navigation bar */
+        .navbar {
+            background-color: #4CAF50;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #45a049;
+        }
+
+        /* Styling for sections */
+        section {
+            display: none;
+        }
+
+        section.active {
+            display: block;
+        }
+        
+        .Logo {
+            display: block;
+            margin: auto; /* Center the image */
+            width: auto; /* Adjust the width as needed */
+            max-width:auto; /* Limit the maximum width */
+        }
+    </style>
+</head>
+<body style="background-color: #f5f5f5;">
+    <div class="content">
+        <div class="header">
+            <a href="https://en.m.wikipedia.org/wiki/Caesar_cipher">
+                <img src="20240327_205912.png"> <!-- Replace "your_logo.png" with your actual logo file -->
+            </a>
+            <div class="logo">
+                <a href="quartzofontpersonaluse-bold.png">
+                    <img src="text-1711589506482.png" alt="Logo" width="550"
+                    height="250"> <!-- Replace "your_logo.png" with your actual logo file -->
+                </a>
+            </div>
+        </div>
+        <div class="navbar">
+            <a href="mechanics.html" class="active" onclick="showSection('mechanic')">ABOUT THE MECHANIC</a>
+            <a href="history.html" onclick="showSection('history')">HISTORY</a>
+            <a href="members.html" onclick="showSection('members')">CREATORS</a>
+        </div>
+        <section id="mechanic" class="active">
+            <!-- Include the content from mechanics.html here -->
+        </section>
+        <section id="history">
+            <!-- Include the content from history.html here -->
+        </section>
+        <section id="members">
+            <!-- Include the content from members.html here -->
+        </section>
+        <div class="input-box">
+            <label for="input">Enter text to encrypt/decrypt:</label><br>
+            <textarea id="input" rows="4" cols="50"></textarea>
+        </div>
+        <div class="input-box">
+            <label for="key">Enter encryption/decryption key (1-26):</label>
+            <input type="number" id="key" min="1" max="26" value="3">
+        </div>
+        <button onclick="encrypt()">Encrypt</button>
+        <button onclick="decrypt()">Decrypt</button>
+        <div class="loader" id="loader"></div> <!-- Loading animation -->
+        <div id="output"></div>
+    </div>
+
+    <script>
+        // Function to show selected section and hide others
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+
+            const links = document.querySelectorAll('.navbar a');
+            links.forEach(link => {
+                if (link.getAttribute('onclick').includes(sectionId)) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        // Function to encrypt text using Caesar cipher
+        function encrypt() {
+            document.getElementById('loader').style.display = 'block'; // Show loader animation
+            setTimeout(() => {
+                const text = document.getElementById('input').value.toUpperCase();
+                const key = parseInt(document.getElementById('key').value);
+                let result = '';
+                for (let i = 0; i < text.length; i++) {
+                    let charCode = text.charCodeAt(i);
+                    // Implementing Caesar cipher logic
+                    if (charCode >= 65 && charCode <= 90) {
+                        charCode = ((charCode - 65 + (charCode - 64) + key) %26) + 65;
+                    }
+                    result += String.fromCharCode(charCode);
+                }
+                document.getElementById('output').innerText = result;
+                document.getElementById('loader').style.display = 'none'; // Hide loader animation
+            }, 2000); // Simulating encryption process with 2 seconds delay
+        }
+
+        // Function to decrypt text using Caesar cipher
+        function decrypt() {
+            document.getElementById('loader').style.display = 'block'; // Show loader animation
+            setTimeout(() => {
+                const text = document.getElementById('input').value.toUpperCase();
+                const key = parseInt(document.getElementById('key').value);
+                let result = '';
+                for (let i = 0; i < text.length; i++) {
+                    let charCode = text.charCodeAt(i);
+                    // Implementing reverse Caesar cipher logic for decryption
+                    if (charCode >= 65 && charCode <= 90) {
+                        charCode = ((charCode - 65 - (charCode - 64) + 26 - key) % 26) + 65;
+                    }
+                    result += String.fromCharCode(charCode);
+                }
+                document.getElementById('output').innerText = result;
+                document.getElementById('loader').style.display = 'none'; // Hide loader animation
+            }, 2000); // Simulating decryption process with 2 seconds delay
+        }
+    </script>
+</body>
+</html>
